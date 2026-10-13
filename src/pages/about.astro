@@ -5,7 +5,6 @@ import { getProjects } from '../lib/content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 const projects = await getProjects();
-const email = site.author.email.trim();
 ---
 
 <BaseLayout title="About" description={site.author.bio}>
@@ -27,23 +26,5 @@ const email = site.author.email.trim();
       <h2 class="kicker">Projects</h2>
     </div>
     <ProjectList entries={projects} />
-  </section>
-
-  <section class="section">
-    <div class="section-head">
-      <h2 class="kicker">Contact</h2>
-    </div>
-    <p>
-      GitHub：<a href={site.author.github}>{site.author.github}</a>
-    </p>
-    {
-      email ? (
-        <p>
-          Email：<a href={`mailto:${email}`}>{email}</a>
-        </p>
-      ) : (
-        <p class="muted">Email 尚未在 `src/data/site.ts` 中配置。</p>
-      )
-    }
   </section>
 </BaseLayout>
