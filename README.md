@@ -8,6 +8,8 @@
 
 把 Markdown 或 MDX 放到对应目录，不必改页面代码。推送到 `main` 后由 GitHub Actions 检查并发布。
 
+Agent 改内容和排版前先读 `AGENTS.md`。
+
 | 类型 | 目录 | 必要字段 |
 | --- | --- | --- |
 | 文章 | `src/content/writing/` | `title` `description` `publishedAt` |
@@ -35,16 +37,16 @@ featured: false
 
 站点名称、简介、GitHub、Email 写在 `src/data/site.ts`。没有的信息保持空字段。
 
-## 部署到 GitHub Pages
+## 自动发布
 
-工作流：`.github/workflows/deploy.yml`。推送到 `main` 后会先跑内容检查、类型检查和构建，全部通过才发布。
+推送到 `main` 就会发布，不需要本地构建。
 
-1. 在仓库 Settings → Pages → Build and deployment 中选择 **GitHub Actions**。
-2. 用户站点：仓库名为 `ADaozz.github.io`，访问 `https://adaozz.github.io/`。
-3. 项目站点：访问 `https://adaozz.github.io/<repo>/`。
-4. 如需覆盖自动推导，在 Actions 环境中设置 `SITE_URL` 和 `BASE_PATH`。
+工作流 `.github/workflows/deploy.yml` 会依次跑内容检查、类型检查和构建，全部通过后部署到 GitHub Pages。
 
-需要你在 GitHub 上确认 Pages 源为 GitHub Actions，并把代码合并到 `main`。
+一次性设置：仓库 Settings → Pages → Build and deployment → Source 选 **GitHub Actions**。当前 PR 还在 `main` 之外时，先合并，之后每次 push `main` 都会更新站点。
+
+- 用户站点仓库 `ADaozz.github.io` → `https://adaozz.github.io/`
+- 当前仓库 `blog` → `https://adaozz.github.io/blog/`
 
 ## 设计说明
 
