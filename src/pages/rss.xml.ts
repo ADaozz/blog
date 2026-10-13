@@ -1,32 +1,66 @@
 import rss from '@astrojs/rss';
-import type { APIContext } from 'astro';
-import { getNotes, getWriting, notePath, writingPath } from '../lib/content';
+import { getNotes, getProjects, getWriting, notePath, writingPath } from '../lib/content';
 import { site } from '../data/site';
 import { absoluteUrl } from '../lib/urls';
 
-export async function GET(context: APIContext) {
+type FeedItem = {
+  title: string;
+  description: string;
+  link: string;
+  pubDate?: Date;
+  categories?: string[];
+};
+
+export async function GET() {
   const writing = await getWriting();
   const notes = await getNotes();
-  const items = [
+  const projects = await getProjects();
+  const self = absoluteUrl('/rss.xml');
+  const items: FeedItem[] = [
     ...writing.map((entry) => ({
       title: entry.data.title,
       description: entry.data.description,
       pubDate: entry.data.publishedAt,
-      link: writingPath(entry),
+      link: absoluteUrl(writingPath(entry)),
+      categories: entry.data.tags,
     })),
     ...notes.map((entry) => ({
       title: entry.data.title,
       description: entry.data.description,
       pubDate: entry.data.publishedAt,
-      link: notePath(entry),
+      link: absoluteUrl(notePath(entry)),
+      categories: entry.data.tags,
     })),
-  ].sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime());
+    ...projects
+      .filter((entry) => Boolean(entry.data.github))
+      .map((entry) => ({
+        title: entry.data.title,
+        description: entry.data.summary,
+        pubDate: undefined,
+        link: String(entry.data.github),
+        categories: entry.data.stack,
+      })),
+  ];
+  items.sort((a, b) => (b.pubDate?.getTime() ?? 0) - (a.pubDate?.getTime() ?? 0));
 
-  return rss({
+  const feed = await rss({
     title: site.title,
     description: site.description,
-    site: context.site ?? absoluteUrl('/'),
+    site: absoluteUrl('/'),
     items,
     trailingSlash: true,
+    xmlns: {
+      atom: 'http://www.w3.org/2005/Atom',
+    },
+    customData: [
+      `<language>${site.locale}</language>`,
+      `<atom:link href="${self}" rel="self" type="application/rss+xml"/>`,
+    ].join(''),
+  });
+
+  return new Response(feed.body, {
+    headers: {
+      'Content-Type': 'application/rss+xml; charset=utf-8',
+    },
   });
 }

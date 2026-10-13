@@ -25,6 +25,42 @@ const pathname = Astro.url.pathname;
           <path d="M16 16.5 20.25 20.75" stroke-linecap="round"></path>
         </svg>
       </a>
+      <button type="button" class="theme-toggle" aria-label="切换夜间模式" aria-pressed="false">
+        <svg class="icon-night" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+          <path d="M15.2 3.6A8.4 8.4 0 1 0 20.4 14 6.6 6.6 0 0 1 15.2 3.6Z" stroke-linejoin="round"></path>
+        </svg>
+        <svg class="icon-day" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+          <circle cx="12" cy="12" r="3.4"></circle>
+          <path d="M12 3.2v1.6M12 19.2v1.6M4.8 12H3.2M20.8 12h-1.6M6.2 6.2l1.1 1.1M16.7 16.7l1.1 1.1M17.8 6.2l-1.1 1.1M7.3 16.7l-1.1 1.1" stroke-linecap="round"></path>
+        </svg>
+      </button>
     </nav>
   </div>
 </header>
+
+<script>
+  const root = document.documentElement;
+  const button = document.querySelector<HTMLButtonElement>('.theme-toggle');
+
+  function isNight() {
+    return root.getAttribute('data-theme') === 'night';
+  }
+
+  function sync() {
+    if (!button) return;
+    button.setAttribute('aria-pressed', isNight() ? 'true' : 'false');
+  }
+
+  button?.addEventListener('click', () => {
+    if (isNight()) {
+      root.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'day');
+    } else {
+      root.setAttribute('data-theme', 'night');
+      localStorage.setItem('theme', 'night');
+    }
+    sync();
+  });
+
+  sync();
+</script>

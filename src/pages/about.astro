@@ -1,7 +1,7 @@
 ---
+import ProjectList from '../components/ProjectList.astro';
 import { site } from '../data/site';
 import { getProjects } from '../lib/content';
-import { projectStatusLabel } from '../lib/content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 const projects = await getProjects();
@@ -26,24 +26,7 @@ const email = site.author.email.trim();
     <div class="section-head">
       <h2 class="kicker">Projects</h2>
     </div>
-    {
-      projects.length === 0 ? (
-        <p class="empty-state">公开项目列表目前为空。</p>
-      ) : (
-        projects.map((entry) => (
-          <article class="project-row">
-            <div>
-              <h2>{entry.data.title}</h2>
-              <p>{entry.data.summary}</p>
-              <div class="project-meta">
-                <span>状态 {projectStatusLabel[entry.data.status]}</span>
-                {entry.data.github && <a href={entry.data.github}>GitHub</a>}
-              </div>
-            </div>
-          </article>
-        ))
-      )
-    }
+    <ProjectList entries={projects} />
   </section>
 
   <section class="section">

@@ -33,11 +33,10 @@ jobs:
           REPO="${{ github.event.repository.name }}"
           OWNER_LC="$(printf '%s' "$OWNER" | tr '[:upper:]' '[:lower:]')"
           REPO_LC="$(printf '%s' "$REPO" | tr '[:upper:]' '[:lower:]')"
+          echo "SITE_URL=https://${OWNER_LC}.github.io" >> "$GITHUB_ENV"
           if [ "$REPO_LC" = "${OWNER_LC}.github.io" ]; then
-            echo "SITE_URL=https://${OWNER_LC}.github.io" >> "$GITHUB_ENV"
             echo "BASE_PATH=/" >> "$GITHUB_ENV"
           else
-            echo "SITE_URL=https://${OWNER_LC}.github.io/${REPO}" >> "$GITHUB_ENV"
             echo "BASE_PATH=/${REPO}" >> "$GITHUB_ENV"
           fi
 
