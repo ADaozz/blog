@@ -14,27 +14,31 @@ const { entries } = Astro.props;
     <p class="empty-state">还没有可展示的项目。</p>
   ) : (
     <div>
-      {entries.map((entry, index) => (
-        <article class="project-row">
-          <div class="index-no">{String(index + 1).padStart(2, '0')}</div>
-          <div>
-            <h2>{entry.data.title}</h2>
-            <p>{entry.data.summary}</p>
-            <div class="project-meta">
-              <span>状态 {projectStatusLabel[entry.data.status]}</span>
-              {entry.data.stack.map((item) => (
-                <span>{item}</span>
-              ))}
-              {entry.data.github && (
-                <a href={entry.data.github} rel="noreferrer">GitHub</a>
-              )}
-              {entry.data.homepage && (
-                <a href={entry.data.homepage} rel="noreferrer">主页</a>
-              )}
+      {entries.map((entry, index) => {
+        const href = entry.data.github || entry.data.homepage;
+        const Tag = href ? 'a' : 'article';
+        return (
+          <Tag
+            class="project-row"
+            href={href}
+            rel={href ? 'noreferrer' : undefined}
+            target={href ? '_blank' : undefined}
+          >
+            <div class="index-no">{String(index + 1).padStart(2, '0')}</div>
+            <div>
+              <h2>{entry.data.title}</h2>
+              <p>{entry.data.summary}</p>
+              <div class="project-meta">
+                <span>状态 {projectStatusLabel[entry.data.status]}</span>
+                {entry.data.stack.map((item) => (
+                  <span>{item}</span>
+                ))}
+                {entry.data.github && <span>GitHub</span>}
+              </div>
             </div>
-          </div>
-        </article>
-      ))}
+          </Tag>
+        );
+      })}
     </div>
   )
 }

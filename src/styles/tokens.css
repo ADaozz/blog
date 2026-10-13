@@ -1,11 +1,14 @@
 :root {
-  --color-background: #97ac9f;
-  --color-foreground: #000000;
+  --color-sage: #97ac9f;
+  --color-black: #000000;
+  --color-background: var(--color-sage);
+  --color-foreground: var(--color-black);
   --color-muted: #2e4036;
   --color-border: rgba(0, 0, 0, 0.24);
   --color-surface: rgba(0, 0, 0, 0.045);
-  --color-inverse-background: #000000;
-  --color-inverse-text: #97ac9f;
+  --color-inverse-background: var(--color-black);
+  --color-inverse-text: var(--color-sage);
+  color-scheme: light;
 
   --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', 'PingFang SC',
     'Hiragino Sans GB', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
@@ -43,4 +46,15 @@
   --line: 1px;
   --duration: 160ms;
   --ease: ease;
+}
+
+html[data-theme='night'] {
+  --color-background: var(--color-black);
+  --color-foreground: var(--color-sage);
+  --color-muted: var(--color-sage);
+  --color-border: rgba(151, 172, 159, 0.24);
+  --color-surface: rgba(151, 172, 159, 0.045);
+  --color-inverse-background: var(--color-sage);
+  --color-inverse-text: var(--color-black);
+  color-scheme: dark;
 }

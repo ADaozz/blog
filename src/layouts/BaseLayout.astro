@@ -24,6 +24,13 @@ const canonical = absoluteUrl(canonicalPath);
 <!doctype html>
 <html lang={site.locale}>
   <head>
+    <script is:inline>
+      try {
+        if (localStorage.getItem('theme') === 'night') {
+          document.documentElement.setAttribute('data-theme', 'night');
+        }
+      } catch {}
+    </script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>

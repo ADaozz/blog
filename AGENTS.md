@@ -94,6 +94,7 @@ draft: false
 
 - `status` 只能是 `wip` | `active` | `paused` | `archived`。页面按字段显示，禁止写成「已发布」「稳定」除非字段就是这个意思。
 - 缺少 GitHub 或主页时把字段留空或删掉，不要编链接。
+- 有 `github` 时，列表整行应链到该仓库。
 - `order` 越小越靠前。
 
 ### 站点身份
@@ -132,10 +133,12 @@ Agent 改样式时必须遵守：
 - 列表用横线、编号、留白，不用大面积独立卡片
 - 首页保持：介绍 → 精选文章 → 最近更新 → 双栏 Projects / Notes → 页脚
 - Hover 用下划线或黑色透明度，不用高饱和强调色
+- 夜间模式只对调鼠尾草绿 `#97AC9F` 和黑色 `#000000`，不要引入第三种主色
+- 项目条目（有 GitHub 时）整行链接到 GitHub 仓库页
 - 不用渐变 Hero、玻璃拟态、大阴影、荧光、伪终端、无意义滚动动画
 - 移动端导航必须能换行，不得横向撑破
 - 代码块超长行在块内滚动，不能撑破页面
-- 新主色、明暗主题、评论、登录、CMS 都不要做
+- 不要做评论、登录或 CMS
 
 正文 Markdown 约定：
 
@@ -159,8 +162,10 @@ Agent 改样式时必须遵守：
 
 地址规则（工作流自动算，不要把用户名写进源码）：
 
-- 仓库名是 `ADaozz.github.io` → `https://adaozz.github.io/`
-- 其他仓库名，例如 `blog` → `https://adaozz.github.io/blog/`
+- `SITE_URL` 只写源站，例如 `https://adaozz.github.io`，不要带仓库路径
+- 仓库名是 `ADaozz.github.io` → `BASE_PATH=/` → `https://adaozz.github.io/`
+- 其他仓库名，例如 `blog` → `BASE_PATH=/blog` → `https://adaozz.github.io/blog/`
+- RSS、canonical、sitemap 必须走 `absoluteUrl()`，避免 `/blog/blog/` 这种重复前缀
 
 Agent 发一篇文章的正确动作：
 
