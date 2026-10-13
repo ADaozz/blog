@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 220" role="img" aria-label="????????">
+  <rect x="40.5" y="28.5" width="639" height="27" fill="none" stroke="#000" stroke-width="1.25"/>
+  <rect x="40.5" y="72.5" width="429" height="95" fill="none" stroke="#000" stroke-width="1.25"/>
+  <rect x="490.5" y="72.5" width="189" height="95" fill="none" stroke="#000" stroke-width="1.25"/>
+  <rect x="40.5" y="184.5" width="639" height="15" fill="none" stroke="#000" stroke-width="1.25"/>
+  <text x="52" y="47" font-family="ui-sans-serif, sans-serif" font-size="13" fill="#000">page 1040</text>
+  <text x="52" y="94" font-family="ui-sans-serif, sans-serif" font-size="13" fill="#000">prose 720</text>
+  <text x="502" y="94" font-family="ui-sans-serif, sans-serif" font-size="13" fill="#000">contents</text>
+  <text x="52" y="196" font-family="ui-sans-serif, sans-serif" font-size="12" fill="#000">footer</text>
+</svg>

@@ -1,0 +1,57 @@
+---
+title: "演示：阅读页需要覆盖的 Markdown 能力"
+description: "用一篇演示文检查标题锚点、表格、引用、图片说明、代码复制和超长行滚动。"
+publishedAt: 2026-09-28
+tags:
+  - Markdown
+  - Engineering
+draft: false
+featured: true
+demo: true
+---
+
+下面这些块都是为了验收阅读页，不是一份真实技术结论。
+
+## 标题、目录与引用
+
+当文章出现足够多的标题时，侧栏会显示目录。引用用来放下还没完全想清楚的判断。
+
+> 阅读页的第一任务是让人把一段文字读完。装饰只能出现在不干扰这个任务的位置。
+
+## 表格
+
+| 能力 | 预期 |
+| --- | --- |
+| 语法高亮 | 代码块使用黑绿反转，但不吞掉 token 颜色 |
+| 复制 | 代码块右上角可以复制 |
+| 横向滚动 | 超长行不得撑破页面 |
+| 图片说明 | 图片下方有简短说明 |
+
+## 图片
+
+<figure>
+  <img
+    src={`${import.meta.env.BASE_URL}demo/layout-sketch.svg`}
+    alt="黑线构成的简易版面示意，标注页宽、正文栏和页脚。"
+  />
+  <figcaption>演示图：页宽、正文栏和页脚的对齐关系。不是真实截图。</figcaption>
+</figure>
+
+## 代码
+
+短代码：`SITE_URL` 和 `BASE_PATH` 决定 GitHub Pages 的根路径。
+
+```ts
+const site = process.env.SITE_URL ?? 'https://adaozz.github.io';
+const base = process.env.BASE_PATH ?? '/';
+```
+
+超长行需要在容器内滚动，而不是把页面撑出横向滚动条：
+
+```bash
+curl --fail --silent --show-error https://example.invalid/this-is-a-deliberately-long-demo-url-that-should-scroll-inside-the-code-block-instead-of-breaking-the-page-layout | jq '.items[] | {title, publishedAt, tags}'
+```
+
+## 还需要注意的一点
+
+手机上的正文宽度、行高和代码块滚动要比桌面更关键。这篇演示文的作用就是把这些路径走一遍。

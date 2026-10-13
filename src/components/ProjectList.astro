@@ -1,0 +1,40 @@
+---
+import type { ProjectEntry } from '../lib/content';
+import { projectStatusLabel } from '../lib/content';
+
+interface Props {
+  entries: ProjectEntry[];
+}
+
+const { entries } = Astro.props;
+---
+
+{
+  entries.length === 0 ? (
+    <p class="empty-state">还没有可展示的项目。</p>
+  ) : (
+    <div>
+      {entries.map((entry, index) => (
+        <article class="project-row">
+          <div class="index-no">{String(index + 1).padStart(2, '0')}</div>
+          <div>
+            <h2>{entry.data.title}</h2>
+            <p>{entry.data.summary}</p>
+            <div class="project-meta">
+              <span>状态 {projectStatusLabel[entry.data.status]}</span>
+              {entry.data.stack.map((item) => (
+                <span>{item}</span>
+              ))}
+              {entry.data.github && (
+                <a href={entry.data.github} rel="noreferrer">GitHub</a>
+              )}
+              {entry.data.homepage && (
+                <a href={entry.data.homepage} rel="noreferrer">主页</a>
+              )}
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  )
+}

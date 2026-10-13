@@ -1,0 +1,11 @@
+---
+import { withBase } from '../lib/urls';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Not found" description="页面不存在。">
+  <p class="kicker">404</p>
+  <h1 class="page-title">没有找到这个页面。</h1>
+  <p class="lede">回到首页，或者从 Writing、Notes、Projects 继续读。</p>
+  <p><a href={withBase('/')}>返回首页</a></p>
+</BaseLayout>

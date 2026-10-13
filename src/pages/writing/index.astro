@@ -1,0 +1,66 @@
+---
+import ArticleList from '../../components/ArticleList.astro';
+import { getWriting, groupWritingByYear, uniqueTags } from '../../lib/content';
+import { withBase } from '../../lib/urls';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const writing = await getWriting();
+const grouped = groupWritingByYear(writing);
+const tags = uniqueTags(writing);
+---
+
+<BaseLayout title="Writing" description="按年份整理的文章列表。">
+  <p class="kicker">Writing</p>
+  <h1 class="page-title">文章</h1>
+  <p class="lede">按发布时间倒序排列。标签筛选只改变当前列表，不需要改页面代码。</p>
+
+  {
+    tags.length > 0 && (
+      <nav class="writing-toolbar" aria-label="标签筛选">
+        <a href={withBase('/writing/')} data-tag="" class="tag-filter">
+          全部
+        </a>
+        {tags.map((tag) => (
+          <a href={`${withBase('/writing/')}?tag=${encodeURIComponent(tag)}`} data-tag={tag} class="tag-filter">
+            {tag}
+          </a>
+        ))}
+      </nav>
+    )
+  }
+
+  {
+    grouped.length === 0 ? (
+      <p class="empty-state">还没有已发布的文章。</p>
+    ) : (
+      grouped.map(([year, entries]) => (
+        <section class="year-group" data-year-group>
+          <h2>{year}</h2>
+          <ArticleList entries={entries} />
+        </section>
+      ))
+    )
+  }
+</BaseLayout>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const active = params.get('tag') ?? '';
+  const filters = document.querySelectorAll<HTMLAnchorElement>('.tag-filter');
+  for (const filter of filters) {
+    filter.dataset.active = filter.dataset.tag === active ? 'true' : 'false';
+    if (filter.dataset.tag === active) filter.setAttribute('aria-current', 'true');
+  }
+
+  if (active) {
+    const rows = document.querySelectorAll<HTMLElement>('.article-row');
+    for (const row of rows) {
+      const tags = (row.dataset.tags ?? '').split(',').filter(Boolean);
+      row.hidden = !tags.includes(active);
+    }
+    for (const group of document.querySelectorAll<HTMLElement>('[data-year-group]')) {
+      const visible = group.querySelectorAll('.article-row:not([hidden])');
+      group.hidden = visible.length === 0;
+    }
+  }
+</script>

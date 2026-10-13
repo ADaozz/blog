@@ -1,0 +1,86 @@
+---
+import type { MarkdownHeading } from 'astro';
+import ArticleMeta from '../components/ArticleMeta.astro';
+import TableOfContents from '../components/TableOfContents.astro';
+import { withBase } from '../lib/urls';
+import BaseLayout from './BaseLayout.astro';
+import '../styles/prose.css';
+
+interface Props {
+  title: string;
+  description: string;
+  publishedAt: Date;
+  updatedAt?: Date;
+  tags: string[];
+  readingTime: number;
+  headings: MarkdownHeading[];
+  backHref: string;
+  backLabel: string;
+  canonicalPath: string;
+  jsonLd?: Record<string, unknown>;
+}
+
+const {
+  title,
+  description,
+  publishedAt,
+  updatedAt,
+  tags,
+  readingTime,
+  headings,
+  backHref,
+  backLabel,
+  canonicalPath,
+  jsonLd,
+} = Astro.props;
+---
+
+<BaseLayout title={title} description={description} canonicalPath={canonicalPath}>
+  {
+    jsonLd && (
+      <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    )
+  }
+  <article class="article-shell">
+    <header class="article-hero">
+      <a class="back-link" href={withBase(backHref)}>{backLabel}</a>
+      <h1>{title}</h1>
+      <ArticleMeta
+        publishedAt={publishedAt}
+        updatedAt={updatedAt}
+        readingTime={readingTime}
+        tags={tags}
+      />
+      {description && <p class="article-summary">{description}</p>}
+    </header>
+    <TableOfContents headings={headings} />
+    <div class="article-main">
+      <div class="prose">
+        <slot />
+      </div>
+      <slot name="after" />
+    </div>
+  </article>
+  <script>
+    const blocks = document.querySelectorAll<HTMLElement>('.prose pre');
+    for (const block of blocks) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'copy-button';
+      button.textContent = 'Copy';
+      button.addEventListener('click', async () => {
+        const code = block.querySelector('code')?.textContent ?? '';
+        try {
+          await navigator.clipboard.writeText(code);
+          button.textContent = 'Copied';
+        } catch {
+          button.textContent = 'Failed';
+        }
+        window.setTimeout(() => {
+          button.textContent = 'Copy';
+        }, 1400);
+      });
+      block.append(button);
+    }
+  </script>
+</BaseLayout>

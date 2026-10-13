@@ -1,0 +1,43 @@
+---
+import { formatDate } from '../../lib/dates';
+import { getNotes, notePath } from '../../lib/content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const notes = await getNotes();
+---
+
+<BaseLayout title="Notes" description="日常技术笔记、命令、缺陷记录和实验。">
+  <p class="kicker">Notes</p>
+  <h1 class="page-title">笔记</h1>
+  <p class="lede">比文章更短，密度更高。用来留命令、缺陷、实验结果和还没写成文的观察。</p>
+
+  <div class="note-list">
+    {
+      notes.length === 0 ? (
+        <p class="empty-state">还没有已发布的笔记。</p>
+      ) : (
+        notes.map((entry) => (
+          <article class="note-row">
+            <time datetime={entry.data.publishedAt.toISOString()}>{formatDate(entry.data.publishedAt)}</time>
+            <div>
+              <h2>
+                <a href={notePath(entry)}>{entry.data.title}</a>
+                {entry.data.demo && <span class="demo-flag">Demo</span>}
+              </h2>
+              {entry.data.description && <p>{entry.data.description}</p>}
+              {entry.data.tags.length > 0 && (
+                <ul class="tag-list">
+                  {entry.data.tags.map((tag) => (
+                    <li>
+                      <span class="tag">{tag}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </article>
+        ))
+      )
+    }
+  </div>
+</BaseLayout>

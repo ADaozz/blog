@@ -1,0 +1,17 @@
+---
+import { site } from '../data/site';
+import { withBase } from '../lib/urls';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="shell footer-inner">
+    <span>{site.name}</span>
+    <div class="footer-links">
+      <a href={site.author.github} rel="me">GitHub</a>
+      <a href={withBase('/rss.xml', { file: true })}>RSS</a>
+      <span>{year}</span>
+    </div>
+  </div>
+</footer>

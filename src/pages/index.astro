@@ -1,0 +1,94 @@
+---
+import ArticleList from '../components/ArticleList.astro';
+import ProjectList from '../components/ProjectList.astro';
+import { site } from '../data/site';
+import { formatDate } from '../lib/dates';
+import {
+  getFeaturedWriting,
+  getNotes,
+  getProjects,
+  getWriting,
+  notePath,
+  recentUpdates,
+} from '../lib/content';
+import { withBase } from '../lib/urls';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const writing = await getWriting();
+const notes = await getNotes();
+const projects = await getProjects();
+const featured = getFeaturedWriting(writing);
+const updates = recentUpdates(writing, notes);
+const homeNotes = notes.slice(0, 4);
+---
+
+<BaseLayout>
+  <section class="intro">
+    <p class="kicker">Intro</p>
+    <h1>{site.author.headline}</h1>
+    <p>{site.author.bio}</p>
+  </section>
+
+  <section class="section" aria-labelledby="selected-writing">
+    <div class="section-head">
+      <h2 class="kicker" id="selected-writing">Selected Writing</h2>
+      <a href={withBase('/writing/')}>All writing</a>
+    </div>
+    <ArticleList entries={featured} numbered />
+  </section>
+
+  <section class="section" aria-labelledby="recent-updates">
+    <div class="section-head">
+      <h2 class="kicker" id="recent-updates">Recent Updates</h2>
+    </div>
+    {
+      updates.length === 0 ? (
+        <p class="empty-state">还没有最近更新。</p>
+      ) : (
+        updates.map((item) => (
+          <article class="update-row">
+            <time datetime={item.date.toISOString()}>{formatDate(item.date)}</time>
+            <span class="muted">{item.kind === 'writing' ? 'Writing' : 'Note'}</span>
+            <a href={item.href}>
+              {item.title}
+              {item.demo && <span class="demo-flag">Demo</span>}
+            </a>
+          </article>
+        ))
+      )
+    }
+  </section>
+
+  <section class="section split">
+    <div aria-labelledby="home-projects">
+      <div class="section-head">
+        <h2 class="kicker" id="home-projects">Projects</h2>
+        <a href={withBase('/projects/')}>All projects</a>
+      </div>
+      <ProjectList entries={projects.slice(0, 3)} />
+    </div>
+    <div aria-labelledby="home-notes">
+      <div class="section-head">
+        <h2 class="kicker" id="home-notes">Notes</h2>
+        <a href={withBase('/notes/')}>All notes</a>
+      </div>
+      {
+        homeNotes.length === 0 ? (
+          <p class="empty-state">还没有笔记。</p>
+        ) : (
+          homeNotes.map((entry, index) => (
+            <article class="note-row">
+              <div class="index-no">{String(index + 1).padStart(2, '0')}</div>
+              <div>
+                <h2>
+                  <a href={notePath(entry)}>{entry.data.title}</a>
+                </h2>
+                {entry.data.description && <p>{entry.data.description}</p>}
+              </div>
+            </article>
+          ))
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>

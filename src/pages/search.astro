@@ -1,0 +1,107 @@
+---
+import { withBase } from '../lib/urls';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const indexHref = withBase('/search-index.json', { file: true });
+---
+
+<BaseLayout title="Search" description="搜索文章与笔记的标题、摘要和标签。">
+  <p class="kicker">Search</p>
+  <h1 class="page-title">搜索</h1>
+  <p class="lede">在构建期生成的静态索引中匹配标题、摘要和标签。</p>
+
+  <form class="search-form" method="get" action={withBase('/search/')} role="search">
+    <label class="visually-hidden" for="q">关键词</label>
+    <input id="q" name="q" type="search" placeholder="标题、摘要或标签" autocomplete="off" />
+    <button type="submit">搜索</button>
+  </form>
+
+  <p id="search-status" class="muted"></p>
+  <div id="search-results"></div>
+</BaseLayout>
+
+<style>
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+</style>
+
+<script define:vars={{ indexHref }}>
+  const form = document.querySelector('.search-form');
+  const input = document.querySelector('#q');
+  const status = document.querySelector('#search-status');
+  const results = document.querySelector('#search-results');
+
+  let records = [];
+
+  function matches(record, query) {
+    const needle = query.trim().toLowerCase();
+    if (!needle) return false;
+    return [record.title, record.description, ...record.tags].join(' ').toLowerCase().includes(needle);
+  }
+
+  function render(query) {
+    if (!status || !results || !input) return;
+    input.value = query;
+    if (!query.trim()) {
+      status.textContent = records.length ? `索引中有 ${records.length} 条内容。` : '正在读取索引。';
+      results.replaceChildren();
+      return;
+    }
+
+    const hits = records.filter((record) => matches(record, query));
+    status.textContent = hits.length ? `找到 ${hits.length} 条结果。` : '没有匹配结果。';
+    results.replaceChildren();
+
+    for (const hit of hits) {
+      const article = document.createElement('article');
+      article.className = 'article-row';
+
+      const kind = document.createElement('div');
+      kind.className = 'index-no';
+      kind.textContent = hit.kind === 'writing' ? 'Writing' : 'Note';
+
+      const body = document.createElement('div');
+      const heading = document.createElement('h2');
+      const link = document.createElement('a');
+      link.href = hit.href;
+      link.textContent = hit.title;
+      heading.append(link);
+
+      const summary = document.createElement('p');
+      summary.textContent = hit.description;
+
+      body.append(heading, summary);
+      article.append(kind, body);
+      results.append(article);
+    }
+  }
+
+  async function init() {
+    const query = new URLSearchParams(window.location.search).get('q') ?? '';
+    try {
+      const response = await fetch(indexHref);
+      records = await response.json();
+    } catch {
+      if (status) status.textContent = '搜索索引读取失败。';
+      return;
+    }
+    render(query);
+  }
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const query = input?.value ?? '';
+    const next = new URL(window.location.href);
+    if (query.trim()) next.searchParams.set('q', query.trim());
+    else next.searchParams.delete('q');
+    window.history.replaceState({}, '', next);
+    render(query);
+  });
+
+  void init();
+</script>
