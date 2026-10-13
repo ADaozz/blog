@@ -22,7 +22,6 @@ const { entries, numbered = false } = Astro.props;
           <div>
             <h2>
               <a href={writingPath(entry)}>{entry.data.title}</a>
-              {entry.data.demo && <span class="demo-flag">Demo</span>}
             </h2>
             <p>{entry.data.description}</p>
             {entry.data.tags.length > 0 && (

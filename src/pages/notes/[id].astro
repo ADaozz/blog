@@ -30,7 +30,6 @@ const readingTime = readingTimeMinutes(entry.body ?? '');
   backLabel="返回 Notes"
   canonicalPath={notePath(entry)}
 >
-  {entry.data.demo && <p class="muted">这条是演示笔记，用来展示时间流布局。</p>}
   <Content />
   <div class="pager" slot="after">
     {prev ? <a href={notePath(prev)}>较新：{prev.data.title}</a> : <span></span>}

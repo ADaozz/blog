@@ -49,10 +49,7 @@ const homeNotes = notes.slice(0, 4);
           <article class="update-row">
             <time datetime={item.date.toISOString()}>{formatDate(item.date)}</time>
             <span class="muted">{item.kind === 'writing' ? 'Writing' : 'Note'}</span>
-            <a href={item.href}>
-              {item.title}
-              {item.demo && <span class="demo-flag">Demo</span>}
-            </a>
+            <a href={item.href}>{item.title}</a>
           </article>
         ))
       )

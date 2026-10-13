@@ -43,7 +43,6 @@ const canonicalPath = writingPath(entry);
     url: absoluteUrl(canonicalPath),
   }}
 >
-  {entry.data.demo && <p class="muted">这篇是站点演示内容，不是作者已经对外发表的文章。</p>}
   <Content />
   <div slot="after">
     <div class="pager">

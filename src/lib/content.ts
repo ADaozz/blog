@@ -76,7 +76,6 @@ export type RecentItem = {
   title: string;
   href: string;
   date: Date;
-  demo?: boolean;
 };
 
 export function recentUpdates(writing: WritingEntry[], notes: NoteEntry[], limit = 6): RecentItem[] {
@@ -86,14 +85,12 @@ export function recentUpdates(writing: WritingEntry[], notes: NoteEntry[], limit
       title: entry.data.title,
       href: writingPath(entry),
       date: entry.data.publishedAt,
-      demo: entry.data.demo,
     })),
     ...notes.map((entry) => ({
       kind: 'note' as const,
       title: entry.data.title,
       href: notePath(entry),
       date: entry.data.publishedAt,
-      demo: entry.data.demo,
     })),
   ];
   return items.sort((a, b) => compareDesc(a.date, b.date)).slice(0, limit);

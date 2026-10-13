@@ -22,7 +22,6 @@ const notes = await getNotes();
             <div>
               <h2>
                 <a href={notePath(entry)}>{entry.data.title}</a>
-                {entry.data.demo && <span class="demo-flag">Demo</span>}
               </h2>
               {entry.data.description && <p>{entry.data.description}</p>}
               {entry.data.tags.length > 0 && (

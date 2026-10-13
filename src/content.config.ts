@@ -13,7 +13,6 @@ const writing = defineCollection({
     tags: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
     featured: z.boolean().default(false),
-    demo: z.boolean().default(false),
   }),
 });
 
@@ -25,7 +24,6 @@ const notes = defineCollection({
     publishedAt: z.coerce.date(),
     tags: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
-    demo: z.boolean().default(false),
   }),
 });
 
