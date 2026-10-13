@@ -1,0 +1,29 @@
+---
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  headings: Heading[];
+}
+
+const { headings } = Astro.props;
+const items = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+---
+
+{
+  items.length >= 3 && (
+    <nav class="toc" aria-label="目录">
+      <h2>Contents</h2>
+      <ol>
+        {items.map((heading) => (
+          <li style={`padding-left: ${heading.depth === 3 ? '0.8rem' : '0'}`}>
+            <a href={`#${heading.slug}`}>{heading.text}</a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  )
+}

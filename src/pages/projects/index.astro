@@ -1,0 +1,14 @@
+---
+import ProjectList from '../../components/ProjectList.astro';
+import { getProjects } from '../../lib/content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const projects = await getProjects();
+---
+
+<BaseLayout title="Projects" description="个人项目清单，状态来自内容字段。">
+  <p class="kicker">Projects</p>
+  <h1 class="page-title">项目</h1>
+  <p class="lede">状态从内容元数据读取，不在页面里假设项目已经发布或稳定。</p>
+  <ProjectList entries={projects} />
+</BaseLayout>

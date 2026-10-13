@@ -1,0 +1,41 @@
+---
+import type { WritingEntry } from '../lib/content';
+import { writingPath } from '../lib/content';
+import { formatDate } from '../lib/dates';
+
+interface Props {
+  entries: WritingEntry[];
+  numbered?: boolean;
+}
+
+const { entries, numbered = false } = Astro.props;
+---
+
+{
+  entries.length === 0 ? (
+    <p class="empty-state">还没有已发布的文章。</p>
+  ) : (
+    <div>
+      {entries.map((entry, index) => (
+        <article class="article-row" data-tags={entry.data.tags.join(',')}>
+          <div class="index-no">{numbered ? String(index + 1).padStart(2, '0') : formatDate(entry.data.publishedAt)}</div>
+          <div>
+            <h2>
+              <a href={writingPath(entry)}>{entry.data.title}</a>
+            </h2>
+            <p>{entry.data.description}</p>
+            {entry.data.tags.length > 0 && (
+              <ul class="tag-list">
+                {entry.data.tags.map((tag) => (
+                  <li>
+                    <span class="tag">{tag}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </article>
+      ))}
+    </div>
+  )
+}

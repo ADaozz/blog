@@ -1,0 +1,54 @@
+---
+import { render } from 'astro:content';
+import { site } from '../../data/site';
+import { getWriting, neighbors, writingPath } from '../../lib/content';
+import { readingTimeMinutes } from '../../lib/reading-time';
+import { absoluteUrl, withBase } from '../../lib/urls';
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+
+export async function getStaticPaths() {
+  const writing = await getWriting();
+  return writing.map((entry) => ({
+    params: { id: entry.id },
+    props: { entry, writing },
+  }));
+}
+
+const { entry, writing } = Astro.props;
+const { Content, headings } = await render(entry);
+const { prev, next } = neighbors(writing, entry);
+const readingTime = readingTimeMinutes(entry.body ?? '');
+const canonicalPath = writingPath(entry);
+---
+
+<ArticleLayout
+  title={entry.data.title}
+  description={entry.data.description}
+  publishedAt={entry.data.publishedAt}
+  updatedAt={entry.data.updatedAt}
+  tags={entry.data.tags}
+  readingTime={readingTime}
+  headings={headings}
+  backHref="/writing/"
+  backLabel="返回 Writing"
+  canonicalPath={canonicalPath}
+  jsonLd={{
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: entry.data.title,
+    description: entry.data.description,
+    datePublished: entry.data.publishedAt.toISOString(),
+    dateModified: (entry.data.updatedAt ?? entry.data.publishedAt).toISOString(),
+    author: { '@type': 'Person', name: site.author.name, url: site.author.github },
+    url: absoluteUrl(canonicalPath),
+  }}
+>
+  <Content />
+  <div slot="after">
+    <div class="pager">
+      {next ? <a href={writingPath(next)}>上一篇：{next.data.title}</a> : <span></span>}
+      {prev ? <a href={writingPath(prev)}>下一篇：{prev.data.title}</a> : <span></span>}
+    </div>
+    <p><a class="back-link" href={withBase('/writing/')}>返回文章列表</a></p>
+  </div>
+</ArticleLayout>
